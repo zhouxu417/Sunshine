@@ -1,7 +1,10 @@
 package com.zhouxu417.xu.sunshine;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
 
@@ -40,7 +43,12 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         // For presentation, assume the user doesn't care about tenths of a degree.
         long roundedHigh = Math.round(high);
         long roundedLow = Math.round(low);
-
+//        Sunshine_MainActivityFragment sunshine = new Sunshine_MainActivityFragment();
+//        String units = sunshine.getPreference();
+//        if(units != "metric") {
+//            roundedHigh = roundedHigh * 3 ;
+//            roundedLow = roundedLow * 3;
+//        }
         String highLowStr = roundedHigh + "/" + roundedLow;
         return highLowStr;
     }
@@ -116,9 +124,9 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
             resultStrs[i] = day + " - " + description + " - " + highAndLow;
         }
 
-        for (String s : resultStrs) {
+/*        for (String s : resultStrs) {
             Log.v(LOG_TAG, "Forecast entry: " + s);
-        }
+        }*/
         return resultStrs;
 
     }
