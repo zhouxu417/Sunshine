@@ -3,6 +3,7 @@ package com.zhouxu417.xu.sunshine;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -23,17 +24,19 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
 import com.zhouxu417.xu.sunshine.data.WeatherContract.WeatherEntry;
+
+
 /**
  * Created by xu on 2016/4/22.
  */
 public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
     private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
-    private ArrayAdapter<String> mForecastAdapter;
+    //private ArrayAdapter<String> mForecastAdapter;
     private final Context mContext;
 
-    public FetchWeatherTask(Context context, ArrayAdapter<String> forecastAdapter) {
+    public FetchWeatherTask(Context context) {
         mContext = context;
-        mForecastAdapter = forecastAdapter;
+        //mForecastAdapter = forecastAdapter;
     }
 
     private boolean DEBUG = true;
@@ -41,47 +44,47 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
     /* The date/time conversion code is going to be moved outside the asynctask later,
 * so for convenience we're breaking it out into its own method now.
 */
-    private String getReadableDateString(long time){
-        // Because the API returns a unix timestamp (measured in seconds),
-        // it must be converted to milliseconds in order to be converted to valid date.
-        SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
-        return shortenedDateFormat.format(time);
-    }
+//    private String getReadableDateString(long time){
+//        // Because the API returns a unix timestamp (measured in seconds),
+//        // it must be converted to milliseconds in order to be converted to valid date.
+//        SimpleDateFormat shortenedDateFormat = new SimpleDateFormat("EEE MMM dd");
+//        return shortenedDateFormat.format(time);
+//    }
 
 
 
     /**
      * Prepare the weather high/lows for presentation.
      */
-    private String formatHighLows(double high, double low) {
-        // For presentation, assume the user doesn't care about tenths of a degree.
-
-//        Sunshine_MainActivityFragment sunshine = new Sunshine_MainActivityFragment();
-//        String units = sunshine.getPreference();
-//        if(units != "metric") {
-//            roundedHigh = roundedHigh * 3 ;
-//            roundedLow = roundedLow * 3;
+//    private String formatHighLows(double high, double low) {
+//        // For presentation, assume the user doesn't care about tenths of a degree.
+//
+////        Sunshine_MainActivityFragment sunshine = new Sunshine_MainActivityFragment();
+////        String units = sunshine.getPreference();
+////        if(units != "metric") {
+////            roundedHigh = roundedHigh * 3 ;
+////            roundedLow = roundedLow * 3;
+////        }
+//
+//        SharedPreferences sharedPrefs =
+//                PreferenceManager.getDefaultSharedPreferences(mContext);
+//        String unitType = sharedPrefs.getString(
+//                mContext.getString(R.string.pref_key_units),
+//                mContext.getString(R.string.pref_units_metric));
+//
+//        if (unitType.equals(mContext.getString(R.string.pref_units_imperial))) {
+//            high = (high * 1.8) + 32;
+//            low = (low * 1.8) + 32;
+//        } else if (!unitType.equals(mContext.getString(R.string.pref_units_metric))) {
+//            Log.d(LOG_TAG, "Unit type not found: " + unitType);
 //        }
-
-        SharedPreferences sharedPrefs =
-                PreferenceManager.getDefaultSharedPreferences(mContext);
-        String unitType = sharedPrefs.getString(
-                mContext.getString(R.string.pref_key_units),
-                mContext.getString(R.string.pref_units_metric));
-
-        if (unitType.equals(mContext.getString(R.string.pref_units_imperial))) {
-            high = (high * 1.8) + 32;
-            low = (low * 1.8) + 32;
-        } else if (!unitType.equals(mContext.getString(R.string.pref_units_metric))) {
-            Log.d(LOG_TAG, "Unit type not found: " + unitType);
-        }
-
-        long roundedHigh = Math.round(high);
-        long roundedLow = Math.round(low);
-
-        String highLowStr = roundedHigh + "/" + roundedLow;
-        return highLowStr;
-    }
+//
+//        long roundedHigh = Math.round(high);
+//        long roundedLow = Math.round(low);
+//
+//        String highLowStr = roundedHigh + "/" + roundedLow;
+//        return highLowStr;
+//    }
 
     /**
      * Helper method to handle insertion of a new location in the weather database.
@@ -99,21 +102,21 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         return -1;
     }
 
-    String[] convertContentValuesToUXFormat(Vector<ContentValues> cvv) {
-        // return strings to keep UI functional for now
-        String[] resultStrs = new String[cvv.size()];
-        for ( int i = 0; i < cvv.size(); i++ ) {
-            ContentValues weatherValues = cvv.elementAt(i);
-            String highAndLow = formatHighLows(
-                    weatherValues.getAsDouble(WeatherEntry.COLUMN_MAX_TEMP),
-                    weatherValues.getAsDouble(WeatherEntry.COLUMN_MIN_TEMP));
-            resultStrs[i] = getReadableDateString(
-                    weatherValues.getAsLong(WeatherEntry.COLUMN_DATE)) +
-                    " - " + weatherValues.getAsString(WeatherEntry.COLUMN_SHORT_DESC) +
-                    " - " + highAndLow;
-        }
-        return resultStrs;
-    }
+//    String[] convertContentValuesToUXFormat(Vector<ContentValues> cvv) {
+//        // return strings to keep UI functional for now
+//        String[] resultStrs = new String[cvv.size()];
+//        for ( int i = 0; i < cvv.size(); i++ ) {
+//            ContentValues weatherValues = cvv.elementAt(i);
+//            String highAndLow = formatHighLows(
+//                    weatherValues.getAsDouble(WeatherEntry.COLUMN_MAX_TEMP),
+//                    weatherValues.getAsDouble(WeatherEntry.COLUMN_MIN_TEMP));
+//            resultStrs[i] = getReadableDateString(
+//                    weatherValues.getAsLong(WeatherEntry.COLUMN_DATE)) +
+//                    " - " + weatherValues.getAsString(WeatherEntry.COLUMN_SHORT_DESC) +
+//                    " - " + highAndLow;
+//        }
+//        return resultStrs;
+//    }
     /**
      * Take the String representing the complete forecast in JSON Format and
      * pull out the data we need to construct the Strings needed for the wireframes.
@@ -248,17 +251,17 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
             // Students: Uncomment the next lines to display what what you stored in the bulkInsert
 
-//            Cursor cur = mContext.getContentResolver().query(weatherForLocationUri,
-//                    null, null, null, sortOrder);
-//
-//            cVVector = new Vector<ContentValues>(cur.getCount());
-//            if ( cur.moveToFirst() ) {
-//                do {
-//                    ContentValues cv = new ContentValues();
-//                    DatabaseUtils.cursorRowToContentValues(cur, cv);
-//                    cVVector.add(cv);
-//                } while (cur.moveToNext());
-//            }
+            Cursor cur = mContext.getContentResolver().query(weatherForLocationUri,
+                    null, null, null, sortOrder);
+
+            cVVector = new Vector<ContentValues>(cur.getCount());
+            if ( cur.moveToFirst() ) {
+                do {
+                    ContentValues cv = new ContentValues();
+                    DatabaseUtils.cursorRowToContentValues(cur, cv);
+                    cVVector.add(cv);
+                } while (cur.moveToNext());
+            }
 
             Log.d(LOG_TAG, "FetchWeatherTask Complete. " + cVVector.size() + " Inserted");
 
@@ -369,15 +372,15 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         return null;
     }
 
-    @Override
-    protected void onPostExecute(String[] result) {
-        if(result != null){
-            Sunshine_MainActivityFragment.mForecastAdapter.clear();
-            for(String dayForecastStr : result){
-                Sunshine_MainActivityFragment.mForecastAdapter.add(dayForecastStr);
-            }
-        }
-    }
+//    @Override
+//    protected void onPostExecute(String[] result) {
+//        if(result != null){
+//            Sunshine_MainActivityFragment.mForecastAdapter.clear();
+//            for(String dayForecastStr : result){
+//                Sunshine_MainActivityFragment.mForecastAdapter.add(dayForecastStr);
+//            }
+//        }
+//    }
 }
 
 

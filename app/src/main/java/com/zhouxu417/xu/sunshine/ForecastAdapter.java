@@ -64,10 +64,25 @@ public class ForecastAdapter extends CursorAdapter {
      */
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        // our view is pretty simple here --- just a text view
-        // we'll keep the UI functional with a simple (and slow!) binding.
 
-        TextView tv = (TextView)view;
-        tv.setText(convertCursorRowToUXFormat(cursor));
+        // Read weather icon ID from cursor
+        int weatherId = cursor.getInt(Sunshine_MainActivityFragment.COL_WEATHER_ID);
+        // Use placeholder image for now
+        ImageView iconView = (ImageView) view.findViewById(R.id.list_item_icon);
+        iconView.setImageResource(R.drawable.ic_launcher);
+
+        // TODO Read date from cursor
+
+        // TODO Read weather forecast from cursor
+
+        // Read user preference for metric or imperial temperature units
+        boolean isMetric = Utility.isMetric(context);
+
+        // Read high temperature from cursor
+        double high = cursor.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP);
+        TextView highView = (TextView) view.findViewById(R.id.list_item_high_textview);
+        highView.setText(Utility.formatTemperature(high, isMetric));
+
+        // TODO Read low temperature from cursor
     }
 }

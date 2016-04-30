@@ -197,7 +197,7 @@ public class Sunshine_MainActivityFragment extends Fragment implements LoaderMan
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        mForecastAdapter.swapCursor(data);
     }
 
     @Override

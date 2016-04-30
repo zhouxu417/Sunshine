@@ -16,14 +16,25 @@ import android.view.View;
 import static android.app.PendingIntent.getActivity;
 
 public class Sunshine_MainActivity extends AppCompatActivity {
+
     private final String LOG_TAG = Sunshine_MainActivity.class.getSimpleName();
+    private static final String FORECASTFRAGMENT_TAG = "FF_TAG";
+    private String mLocation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mLocation = Utility.getPreferredLocation(this);
         setContentView(R.layout.activity_sunshine__main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new Sunshine_MainActivityFragment(), FORECASTFRAGMENT_TAG)
+                    .commit();
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -40,7 +51,7 @@ public class Sunshine_MainActivity extends AppCompatActivity {
     //更新天气数据
     private void updateWeather() {
 
-        FetchWeatherTask weatherTask = new FetchWeatherTask();
+        FetchWeatherTask weatherTask = new FetchWeatherTask(getApplication());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplication());
         String location = prefs.getString(getString(R.string.pref_key_location),getString(R.string.pref_default_location));
         weatherTask.execute(location);
